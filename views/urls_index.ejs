@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>TinyApp</title>
+</head>
+<body>
+    <main style="margin: 1em;">
+      <h3>My URL's</h3>
+      <ul>
+        <% for (let i in urls) { %> 
+          <li><%=`${i} - ${urls[i]}`%></li>
+        <% } %>
+      </ul>
+    </main>
+</body>
+</html>
