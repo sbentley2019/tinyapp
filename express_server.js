@@ -56,7 +56,7 @@ app.get("/hello", (req, res) => {
 
 app.get("/u/:shortURL", (req, res) => {
   let longURL = urlDatabase[req.params.shortURL];
-  res.redirect(`http://${longURL}`);
+  res.redirect(longURL);
 });
 
 app.listen(PORT, () => {
