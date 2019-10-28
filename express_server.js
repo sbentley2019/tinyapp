@@ -14,7 +14,7 @@ const generateRandomString = function() {
     str += alphaNumeric[Math.floor(Math.random() * alphaNumeric.length)];
   }
   return str;
-}
+};
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -52,6 +52,11 @@ app.get("/urls.json", (req, res) => {
 
 app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
+});
+
+app.get("/u/:shortURL", (req, res) => {
+  let longURL = urlDatabase[req.params.shortURL];
+  res.redirect(`http://${longURL}`);
 });
 
 app.listen(PORT, () => {
