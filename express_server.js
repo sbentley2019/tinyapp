@@ -4,6 +4,18 @@ const PORT = 8080;
 
 app.set("view engine", "ejs");
 
+const bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({extended: true}));
+
+const generateRandomString = function() {
+  const alphaNumeric = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let str = "";
+  for (let i = 0; i < 6; i++) {
+    str += alphaNumeric[Math.random() * alphaNumeric.length];
+  }
+  return str;
+}
+
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
@@ -11,6 +23,11 @@ const urlDatabase = {
 
 app.get("/", (req, res) => {
   res.send("Hello!");
+});
+
+app.post("/urls", (req, res) => {
+  console.log(req.body);
+  res.send("Ok");
 });
 
 app.get("/urls", (req, res) => {
