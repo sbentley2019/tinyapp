@@ -11,7 +11,7 @@ const generateRandomString = function() {
   const alphaNumeric = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let str = "";
   for (let i = 0; i < 6; i++) {
-    str += alphaNumeric[Math.random() * alphaNumeric.length];
+    str += alphaNumeric[Math.floor(Math.random() * alphaNumeric.length)];
   }
   return str;
 }
@@ -26,8 +26,10 @@ app.get("/", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
+  let shortURL = generateRandomString();
+  urlDatabase[shortURL] = req.body.longURL;
   console.log(req.body);
-  res.send("Ok");
+  res.redirect(`/urls/${shortURL}`);
 });
 
 app.get("/urls", (req, res) => {
