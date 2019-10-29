@@ -1,18 +1,25 @@
-const generateRandomString = function() {
-  const alphaNumeric = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  let str = "";
-  for (let i = 0; i < 6; i++) {
-    str += alphaNumeric[Math.floor(Math.random() * alphaNumeric.length)];
-  }
-  return str;
-};
-
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
 
+const users = {
+  "userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  },
+  "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
+  }
+};
+
+const PORT = 8080;
+
 module.exports = {
-  generateRandomString,
-  urlDatabase
-}
+  PORT, 
+  urlDatabase,
+  users
+};
