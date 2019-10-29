@@ -11,12 +11,12 @@
         <% if (username) { %>
           <h5 style="margin-left: 700px; margin-top: 10px;">Logged In As: <%= username%></h5>
           <form method="POST" action="/logout" style="margin-left: 25px; margin-top: 3px">
-            <button type="submit" class="btn" style="background-color: white; color: green; border-color: green;">Logout</button>
+            <button type="submit" class="btn" style="background-color: #2DA647; color: black; border-color: black;">Logout</button>
           </form>
         <% } else { %>
           <form method="POST" action="/login" style="margin-left: 700px; margin-top: 3px">
             <input type="text" placeholder="username" name="username">
-            <button type="submit" class="btn" style="background-color: white; color: green; border-color: green;">Login</button>
+            <button type="submit" class="btn" style="background-color: #2DA647; color: black; border-color: black;">Login</button>
           </form>
           <% } %>
       </div>
