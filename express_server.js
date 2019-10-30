@@ -1,9 +1,26 @@
 const express = require('express');
 const app = express();
 const bodyParser = require("body-parser");
-const { generateRandomString, emailLookUp } = require('./functionFile');
 const { urlDatabase, users, PORT } = require('./data');
 const cookieParser = require('cookie-parser');
+
+const generateRandomString = function() {
+  const alphaNumeric = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let str = "";
+  for (let i = 0; i < 6; i++) {
+    str += alphaNumeric[Math.floor(Math.random() * alphaNumeric.length)];
+  }
+  return str;
+};
+
+const validateEmail = function(email) {
+  for (let i in users) {
+    if (email === users[i].email) {
+      return true;
+    }
+  }
+  return false;
+}
 
 app.set("view engine", "ejs");
 
@@ -16,15 +33,13 @@ app.get("/", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  // need to change username to user_id
   console.log(req.body.username);
-  res.cookie("username", req.body.username);
+  res.cookie("user_id", req.body.user_id);
   res.redirect("/urls");
 });
 
 app.post("/logout", (req, res) => {
-    // need to change username to user_id
-  res.clearCookie("username");
+  res.clearCookie("user_id");
   res.redirect("/urls");
 });
 
@@ -34,11 +49,11 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
   // registration handler
-  if (!req.body.email || !req.body.password || emailLookUp(req.body.email, users)) {
+  if (!req.body.email || !req.body.password || validateEmail(req.body.email)) {
     res.statusCode = 400;
-    res.send("Status Code: 400");
+    res.redirect("/register");
   } else {
-    let id = generateRandomString();
+    const id = generateRandomString();
     users[id] = {
       id: id,
       email: req.body.email,
@@ -51,8 +66,7 @@ app.post("/register", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-    // need to change username to user_id
-  let templateVars = { urls: urlDatabase, username: req.cookies["username"] };
+  let templateVars = { urls: urlDatabase, user: users[req.cookies["user_id"]] };
   res.render("urls_index", templateVars);
 });
 
@@ -63,14 +77,12 @@ app.post("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-    // need to change username to user_id
-  let templateVars = { username: req.cookies["username"] };
+  let templateVars = { user: users[req.cookies["user_id"]] };
   res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-    // need to change username to user_id
-  let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username: req.cookies["username"] };
+  let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], user: users[req.cookies["user_id"]] };
   res.render("urls_show", templateVars);
 });
 
