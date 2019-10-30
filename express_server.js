@@ -20,8 +20,7 @@ const lookupEmail = function(email) {
     }
   }
   return false;
-}
-
+};
 
 app.set("view engine", "ejs");
 
@@ -29,12 +28,12 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
 app.get("/", (req, res) => {
-  //need to make a home page
-  res.send("Hello!");
+  res.redirect("/urls");
 });
 
 app.get("/login", (req, res) => {
-  res.render("login.ejs");
+  let templateVars = { user: null };
+  res.render("login", templateVars);
 });
 
 app.post("/login", (req, res) => {
@@ -43,8 +42,7 @@ app.post("/login", (req, res) => {
     res.cookie("user_id", user.id);
     res.redirect("/urls");
   } else {
-    res.statusCode = 403;
-    res.send("statusCode: 403");
+    res.send("Status Code: 403");
   }
 });
 
@@ -54,14 +52,13 @@ app.post("/logout", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  res.render("registration.ejs");
+  let templateVars = { user: null };
+  res.render("registration", templateVars);
 });
 
 app.post("/register", (req, res) => {
-  // registration handler
   if (!req.body.email || !req.body.password || lookupEmail(req.body.email)) {
-    res.statusCode = 400;
-    res.redirect("/register");
+    res.send("Status Code: 403");
   } else {
     const id = generateRandomString();
     users[id] = {
