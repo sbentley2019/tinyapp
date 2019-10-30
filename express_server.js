@@ -33,7 +33,7 @@ app.get("/", (req, res) => {
 
 app.get("/login", (req, res) => {
   let templateVars = { user: null };
-  res.render("login", templateVars);
+  res.render("url_login", templateVars);
 });
 
 app.post("/login", (req, res) => {
@@ -53,7 +53,7 @@ app.post("/logout", (req, res) => {
 
 app.get("/register", (req, res) => {
   let templateVars = { user: null };
-  res.render("registration", templateVars);
+  res.render("url_registration", templateVars);
 });
 
 app.post("/register", (req, res) => {
