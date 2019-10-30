@@ -22,6 +22,15 @@ const lookupEmail = function(email) {
   return false;
 };
 
+const urlsForUser = function(id) {
+  let obj = {};
+  for (let i in urlDatabase) {
+    if (urlDatabase[i].userID === id) {
+      obj[i] = urlDatabase[i].longURL;
+    }
+  }
+  return obj;
+}
 app.set("view engine", "ejs");
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -42,6 +51,7 @@ app.post("/login", (req, res) => {
     res.cookie("user_id", user.id);
     res.redirect("/urls");
   } else {
+    res.statucCode = 403
     res.send("Status Code: 403");
   }
 });
@@ -58,6 +68,7 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
   if (!req.body.email || !req.body.password || lookupEmail(req.body.email)) {
+    res.statucCode = 403
     res.send("Status Code: 403");
   } else {
     const id = generateRandomString();
@@ -73,7 +84,8 @@ app.post("/register", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase, user: users[req.cookies["user_id"]] };
+  console.log(urlsForUser(req.cookies["user_id"]));
+  let templateVars = { urls: urlsForUser(req.cookies["user_id"]), user: users[req.cookies["user_id"]] };
   res.render("urls_index", templateVars);
 });
 
@@ -93,7 +105,7 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], user: users[req.cookies["user_id"]] };
+  let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user: users[req.cookies["user_id"]] };
   res.render("urls_show", templateVars);
 });
 
@@ -112,6 +124,7 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/u/:shortURL", (req, res) => {
+  //currently doesn't work
   let longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
 });
