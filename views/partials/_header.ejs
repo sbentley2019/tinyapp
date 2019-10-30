@@ -9,16 +9,13 @@
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
         <% if (user) { %>
-          <h5 style="margin-left: 700px; margin-top: 10px;">Logged In As: <%= user.email%></h5>
-          <form method="POST" action="/logout" style="margin-left: 25px; margin-top: 3px">
+          <h5 style="margin-top: 10px;">Logged In As: <%= user.email%></h5>
+          <form method="POST" action="/logout" style="margin-top: 3px">
             <button type="submit" class="btn" style="background-color: #2DA647; color: black; border-color: black;">Logout</button>
           </form>
         <% } else { %>
-          <form method="POST" action="/login" style="margin-left: 700px; margin-top: 3px">
-            <input type="text" placeholder="username" name="username">
-            <button type="submit" class="btn" style="background-color: #2DA647; color: black; border-color: black;">Login</button>
-          </form>
-          <a href="/register" style="margin-top: 3px; margin-left:10px;"><button class="btn" style="background-color: #2DA647; color: black; border-color: black;">Register</button></a>
+          <a href="/login" style="margin-top: 3px;"><button class="btn" style="background-color: #2DA647; color: black; border-color: black;">Login</button></a>
+          <a href="/register" style="margin-top: 3px;"><button class="btn" style="background-color: #2DA647; color: black; border-color: black;">Register</button></a>
           <% } %>
       </div>
     </div>

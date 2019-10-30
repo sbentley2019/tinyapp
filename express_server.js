@@ -13,14 +13,15 @@ const generateRandomString = function() {
   return str;
 };
 
-const validateEmail = function(email) {
+const lookupEmail = function(email) {
   for (let i in users) {
     if (email === users[i].email) {
-      return true;
+      return users[i];
     }
   }
   return false;
 }
+
 
 app.set("view engine", "ejs");
 
@@ -32,10 +33,20 @@ app.get("/", (req, res) => {
   res.send("Hello!");
 });
 
+app.get("/login", (req, res) => {
+  res.render("login.ejs");
+});
+
 app.post("/login", (req, res) => {
-  console.log(req.body.username);
-  res.cookie("user_id", req.body.user_id);
-  res.redirect("/urls");
+  // console.log(req.body.username);
+  // res.cookie("user_id", req.body.user_id);
+  // res.redirect("/urls");
+  if (lookupEmail(req.body.email)) {
+    res.cookie("user_id", lookupEmail(req.body.email).id);
+    res.redirect("/urls");
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.post("/logout", (req, res) => {
@@ -49,7 +60,7 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
   // registration handler
-  if (!req.body.email || !req.body.password || validateEmail(req.body.email)) {
+  if (!req.body.email || !req.body.password || lookupEmail(req.body.email)) {
     res.statusCode = 400;
     res.redirect("/register");
   } else {
