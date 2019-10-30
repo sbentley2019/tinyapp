@@ -38,14 +38,13 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  // console.log(req.body.username);
-  // res.cookie("user_id", req.body.user_id);
-  // res.redirect("/urls");
-  if (lookupEmail(req.body.email)) {
-    res.cookie("user_id", lookupEmail(req.body.email).id);
+  const user = lookupEmail(req.body.email); 
+  if (user && user.password === req.body.password && user.email === req.body.email) {
+    res.cookie("user_id", user.id);
     res.redirect("/urls");
   } else {
-    res.redirect("/login");
+    res.statusCode = 403;
+    res.send("statusCode: 403");
   }
 });
 
