@@ -33,7 +33,7 @@ app.get("/", (req, res) => {
 
 app.get("/login", (req, res) => {
   let templateVars = { user: null };
-  res.render("url_login", templateVars);
+  res.render("urls_login", templateVars);
 });
 
 app.post("/login", (req, res) => {
@@ -53,7 +53,7 @@ app.post("/logout", (req, res) => {
 
 app.get("/register", (req, res) => {
   let templateVars = { user: null };
-  res.render("url_registration", templateVars);
+  res.render("urls_registration", templateVars);
 });
 
 app.post("/register", (req, res) => {
@@ -79,13 +79,17 @@ app.get("/urls", (req, res) => {
 
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
-  urlDatabase[shortURL] = req.body.longURL;
+  urlDatabase[shortURL] = { longURL: req.body.longURL, userID: req.cookies["user_id"] };
   res.redirect(`/urls/${shortURL}`);
 });
 
 app.get("/urls/new", (req, res) => {
-  let templateVars = { user: users[req.cookies["user_id"]] };
-  res.render("urls_new", templateVars);
+  if (!req.cookies["user_id"]) {
+    res.redirect("/login");
+  } else {
+    let templateVars = { user: users[req.cookies["user_id"]] };
+    res.render("urls_new", templateVars);
+  }
 });
 
 app.get("/urls/:shortURL", (req, res) => {
