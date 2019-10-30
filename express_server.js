@@ -111,7 +111,7 @@ app.get("/urls/:shortURL", (req, res) => {
 
 app.post("/urls/:shortURL", (req, res) => {
   if (req.cookies["user_id"]) {
-    urlDatabase[req.params.shortURL] = req.body.longURL;
+    urlDatabase[req.params.shortURL] = { longURL: req.body.longURL, userID: req.cookies["user_id"] };
     res.redirect(`/urls/${req.params.shortURL}`);
   } else {
     res.redirect("/login");
