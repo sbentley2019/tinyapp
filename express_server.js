@@ -37,7 +37,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
 app.get("/", (req, res) => {
-  res.redirect("/urls");
+  let templateVars = { urls: urlDatabase, user: null };
+  res.render("urls_home", templateVars);
 });
 
 app.get("/login", (req, res) => {
@@ -84,7 +85,6 @@ app.post("/register", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  console.log(urlsForUser(req.cookies["user_id"]));
   let templateVars = { urls: urlsForUser(req.cookies["user_id"]), user: users[req.cookies["user_id"]] };
   res.render("urls_index", templateVars);
 });
@@ -121,9 +121,10 @@ app.post("/urls/:shortURL", (req, res) => {
 app.post("/urls/:shortURL/delete", (req, res) => {
   if (req.cookies["user_id"] && req.cookies["user_id"] === urlDatabase[req.params.shortURL].userID) {
     delete urlDatabase[req.params.shortURL];
-    console.log("x was deleted.");
+    res.redirect("/urls");
+  } else {
+    res.send("Don't have delete priveliges for that URL");
   }
-  res.redirect("/urls");
 });
 
 app.get("/urls.json", (req, res) => {
