@@ -11,16 +11,19 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
 app.get("/", (req, res) => {
+  //need to make a home page
   res.send("Hello!");
 });
 
 app.post("/login", (req, res) => {
+  // need to change username to user_id
   console.log(req.body.username);
   res.cookie("username", req.body.username);
   res.redirect("/urls");
 });
 
 app.post("/logout", (req, res) => {
+    // need to change username to user_id
   res.clearCookie("username");
   res.redirect("/urls");
 });
@@ -30,6 +33,7 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
+  // registration handler
   if (!req.body.email || !req.body.password || emailLookUp(req.body.email, users)) {
     res.statusCode = 400;
     res.send("Status Code: 400");
@@ -47,6 +51,7 @@ app.post("/register", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
+    // need to change username to user_id
   let templateVars = { urls: urlDatabase, username: req.cookies["username"] };
   res.render("urls_index", templateVars);
 });
@@ -58,11 +63,13 @@ app.post("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
+    // need to change username to user_id
   let templateVars = { username: req.cookies["username"] };
   res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
+    // need to change username to user_id
   let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username: req.cookies["username"] };
   res.render("urls_show", templateVars);
 });
