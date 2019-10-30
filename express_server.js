@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const { urlDatabase, users, PORT } = require('./data');
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
 
 const generateRandomString = function() {
   const alphaNumeric = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -48,7 +49,7 @@ app.get("/login", (req, res) => {
 
 app.post("/login", (req, res) => {
   const user = lookupEmail(req.body.email); 
-  if (user && user.password === req.body.password && user.email === req.body.email) {
+  if (user && bcrypt.compareSync(req.body.password, user.password) && user.email === req.body.email) {
     res.cookie("user_id", user.id);
     res.redirect("/urls");
   } else {
@@ -73,12 +74,13 @@ app.post("/register", (req, res) => {
     res.send("Status Code: 403");
   } else {
     const id = generateRandomString();
+    const password = req.body.password;
+    const hashedPassword = bcrypt.hashSync(password, 10);
     users[id] = {
       id: id,
       email: req.body.email,
-      password: req.body.password
+      password: hashedPassword
     }
-    console.log(users);
     res.cookie("user_id", id);
     res.redirect("/urls");
   }
