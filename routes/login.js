@@ -6,12 +6,8 @@ const bcrypt = require('bcrypt');
 
 module.exports = () => {
   router.get('/', (req, res) => {
-    if (req.session.user_id) {
-      res.redirect('/urls');
-    } else {
       let templateVars = { user: null };
       res.render("urls_login", templateVars);
-    }
   });
 
   router.post('/', (req, res) => {
@@ -23,7 +19,7 @@ module.exports = () => {
       res.statucCode = 403
       res.send("Email and/or password is incorrect.");
     }
-  })
+  });
 
   return router;
-}
+};

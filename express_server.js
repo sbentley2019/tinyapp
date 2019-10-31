@@ -15,6 +15,45 @@ app.use(cookieSession({
   keys: ['key1']
 }));
 
+app.use('/login', (req, res, next) => {
+  if (req.session.user_id) {
+    res.redirect('/urls');
+  } else {
+    next();
+  }
+});
+
+app.use('/logout', (req, res, next) => {
+  if (!req.session.user_id) {
+    res.redirect('/login');
+  } else {
+    next();
+  }
+});
+
+app.use('/register', (req, res, next) => {
+  if (req.session.user_id) {
+    res.redirect('/urls');
+  } 
+  next();
+});
+
+app.use('/urls/new', (req, res, next) => {
+  if (!req.session.user_id) {
+    res.redirect('/login');
+  }
+  next();
+});
+
+app.use('/urls', (req, res, next) => {
+  if (!req.session.user_id) {
+    res.statusCode = 403;
+    res.send("User is not logged in");
+  } else {
+    next();
+  }
+});
+
 app.get("/", (req, res) => {
   if (req.session.user_id) {
     res.redirect('/urls');
