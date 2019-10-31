@@ -2,48 +2,23 @@ const express = require('express');
 const app = express();
 const bodyParser = require("body-parser");
 const { urlDatabase, users, PORT } = require('./data');
-// const cookieParser = require('cookie-parser');
+const { generateRandomString, getUserByEmail, urlsForUser } = require('./helpers');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 
-const generateRandomString = function() {
-  const alphaNumeric = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  let str = "";
-  for (let i = 0; i < 6; i++) {
-    str += alphaNumeric[Math.floor(Math.random() * alphaNumeric.length)];
-  }
-  return str;
-};
-
-const lookupEmail = function(email) {
-  for (let i in users) {
-    if (email === users[i].email) {
-      return users[i];
-    }
-  }
-  return false;
-};
-
-const urlsForUser = function(id) {
-  let obj = {};
-  for (let i in urlDatabase) {
-    if (urlDatabase[i].userID === id) {
-      obj[i] = urlDatabase[i].longURL;
-    }
-  }
-  return obj;
-}
-
 app.set("view engine", "ejs");
+//1. Refactor routers into new files in a route folder.
+//2. use middleware to check cookies and redirect if no cookie for specific routes.
+//req.header.cookie
 
 app.use(bodyParser.urlencoded({extended: true}));
-// app.use(cookieParser());
 app.use(cookieSession({
   name: 'session',
   keys: ['key1']
 }));
 
 app.get("/", (req, res) => {
+  //need to fix the header for login/logout and users.
   let templateVars = { urls: urlDatabase, user: null };
   res.render("urls_home", templateVars);
 });
@@ -54,10 +29,9 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  const user = lookupEmail(req.body.email); 
+  const user = getUserByEmail(req.body.email, users); 
   if (user && bcrypt.compareSync(req.body.password, user.password) && user.email === req.body.email) {
     req.session.user_id = user.id;
-    // res.cookie("user_id", user.id);
     res.redirect("/urls");
   } else {
     res.statucCode = 403
@@ -67,7 +41,6 @@ app.post("/login", (req, res) => {
 
 app.post("/logout", (req, res) => {
   req.session.user_id = null;
-  // res.clearCookie("user_id");
   res.redirect("/urls");
 });
 
@@ -77,7 +50,7 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-  if (!req.body.email || !req.body.password || lookupEmail(req.body.email)) {
+  if (!req.body.email || !req.body.password || getUserByEmail(req.body.email, users)) {
     res.statucCode = 403
     res.send("Status Code: 403");
   } else {
@@ -90,13 +63,12 @@ app.post("/register", (req, res) => {
       password: hashedPassword
     }
     req.session.user_id = id;
-    // res.cookie("user_id", id);
     res.redirect("/urls");
   }
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlsForUser(req.session.user_id), user: users[req.session.user_id] };
+  let templateVars = { urls: urlsForUser(req.session.user_id, urlDatabase), user: users[req.session.user_id] };
   res.render("urls_index", templateVars);
 });
 
@@ -143,7 +115,6 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  //currently doesn't work
   let longURL = urlDatabase[req.params.shortURL].longURL;
   res.redirect(longURL);
 });
