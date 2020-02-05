@@ -10,6 +10,13 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 !["Screenshot of add urls page"](https://raw.githubusercontent.com/sbentley2019/tinyapp/master/docs/addUrls-page.png)
 
+## Getting Started
+
+1. Clone this repository into a local folder.
+2. Install dependencies using `npm install`.
+3. Run the app using `npm start`.
+4. Visit <http://localhost:8080/>.
+
 ## Dependencies
 
 - Node.js
@@ -18,10 +25,3 @@ TinyApp is a full stack web application built with Node and Express that allows 
 - bcrypt
 - body-parser
 - cookie-session
-
-## Getting Started
-
-1. Clone this repository into a local folder.
-2. Install dependencies using `npm install`.
-3. Run the app using `npm start`.
-4. Visit <http://localhost:8080/>.
